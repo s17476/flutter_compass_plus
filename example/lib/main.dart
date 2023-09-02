@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_compass_plus/compass_event.dart';
 import 'package:flutter_compass_plus/flutter_compass_plus.dart';
+import 'package:flutter_compass_plus_example/widgets/raw_data.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'widgets/permission_sheet.dart';
@@ -20,20 +21,31 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool _hasPermissions = false;
-  CompassEvent? _lastRead;
-  DateTime? _lastReadAt;
+
+  void _fetchPermissionStatus() {
+    Permission.locationWhenInUse.status.then((status) {
+      if (mounted) {
+        setState(() => _hasPermissions = status == PermissionStatus.granted);
+      }
+    });
+  }
+
+  void _requestPermission() {
+    Permission.locationWhenInUse.request().then((_) {
+      _fetchPermissionStatus();
+    });
+  }
 
   @override
   void initState() {
-    super.initState();
     _requestPermission();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text('Flutter Compass Plus'),
         ),
@@ -41,52 +53,13 @@ class _MyAppState extends State<MyApp> {
           if (_hasPermissions) {
             return Column(
               children: <Widget>[
-                _buildManualReader(),
+                const RawData(),
                 Expanded(child: _buildCompass()),
               ],
             );
           }
           return const PermissionSheet();
         }),
-      ),
-    );
-  }
-
-  Widget _buildManualReader() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        children: <Widget>[
-          ElevatedButton(
-            child: const Text('Read Value'),
-            onPressed: () async {
-              final CompassEvent tmp =
-                  await FlutterCompassPlus().getEvents()!.first;
-              setState(() {
-                _lastRead = tmp;
-                _lastReadAt = DateTime.now();
-              });
-            },
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    '$_lastRead',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                  Text(
-                    '$_lastReadAt',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -136,19 +109,5 @@ class _MyAppState extends State<MyApp> {
         );
       },
     );
-  }
-
-  void _fetchPermissionStatus() {
-    Permission.locationWhenInUse.status.then((status) {
-      if (mounted) {
-        setState(() => _hasPermissions = status == PermissionStatus.granted);
-      }
-    });
-  }
-
-  void _requestPermission() {
-    Permission.locationWhenInUse.request().then((_) {
-      _fetchPermissionStatus();
-    });
   }
 }
