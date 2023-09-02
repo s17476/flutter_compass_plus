@@ -13,13 +13,13 @@ class CompassEvent {
   // or less than the value here.
   final double? accuracy;
 
-  CompassEvent({
+  CompassEvent._({
     this.heading,
     this.headingForCameraMode,
     this.accuracy,
   });
 
-  factory CompassEvent.fromList(List<double>? data) => CompassEvent(
+  factory CompassEvent.fromList(List<double>? data) => CompassEvent._(
         heading: data?[0],
         headingForCameraMode: data?[1],
         accuracy: (data == null) || (data[2] == -1) ? null : data[2],
