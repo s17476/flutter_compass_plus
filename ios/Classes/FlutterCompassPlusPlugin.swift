@@ -20,8 +20,8 @@ public class FlutterCompassPlusPlugin: NSObject, FlutterPlugin, FlutterStreamHan
   }
   
   public static func register(with registrar: FlutterPluginRegistrar) {
-    let channel = FlutterEventChannel.init(name: "hemanthraj/flutter_compass", binaryMessenger: registrar.messenger())
-    _ = SwiftFlutterCompassPlugin(channel: channel);
+    let channel = FlutterEventChannel.init(name: "flutter_compass_plus", binaryMessenger: registrar.messenger())
+    _ = FlutterCompassPlusPlugin(channel: channel);
   }
 
   public func onListen(withArguments arguments: Any?, eventSink: @escaping FlutterEventSink) -> FlutterError? {

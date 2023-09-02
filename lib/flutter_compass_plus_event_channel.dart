@@ -14,7 +14,7 @@ class EventChannelFlutterCompassPlus extends FlutterCompassPlusPlatform {
   Stream<CompassEvent>? getEvents() {
     _stream ??= compassEventChannel
         .receiveBroadcastStream()
-        .map((event) => CompassEvent.fromList(event));
+        .map((event) => CompassEvent.fromList(event?.cast<double>()));
     return _stream;
   }
 }
