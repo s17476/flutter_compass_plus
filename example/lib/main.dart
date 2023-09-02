@@ -5,6 +5,8 @@ import 'package:flutter_compass_plus/compass_event.dart';
 import 'package:flutter_compass_plus/flutter_compass_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'widgets/permission_sheet.dart';
+
 void main() => runApp(const MyApp());
 
 class MyApp extends StatefulWidget {
@@ -24,7 +26,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    _fetchPermissionStatus();
+    _requestPermission();
   }
 
   @override
@@ -43,9 +45,8 @@ class _MyAppState extends State<MyApp> {
                 Expanded(child: _buildCompass()),
               ],
             );
-          } else {
-            return _buildPermissionSheet();
           }
+          return const PermissionSheet();
         }),
       ),
     );
@@ -137,39 +138,17 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  Widget _buildPermissionSheet() {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          const Text('Location Permission Required'),
-          ElevatedButton(
-            child: const Text('Request Permissions'),
-            onPressed: () {
-              Permission.locationWhenInUse.request().then((ignored) {
-                _fetchPermissionStatus();
-              });
-            },
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            child: const Text('Open App Settings'),
-            onPressed: () {
-              openAppSettings().then((opened) {
-                //
-              });
-            },
-          )
-        ],
-      ),
-    );
-  }
-
   void _fetchPermissionStatus() {
     Permission.locationWhenInUse.status.then((status) {
       if (mounted) {
         setState(() => _hasPermissions = status == PermissionStatus.granted);
       }
+    });
+  }
+
+  void _requestPermission() {
+    Permission.locationWhenInUse.request().then((_) {
+      _fetchPermissionStatus();
     });
   }
 }
