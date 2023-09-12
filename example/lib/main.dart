@@ -88,11 +88,15 @@ class _MyAppState extends State<MyApp> {
           );
         }
 
+        final height = MediaQuery.of(context).size.width * 0.8;
+        final width = MediaQuery.of(context).size.width * 0.8;
         return Material(
           shape: const CircleBorder(),
           clipBehavior: Clip.antiAlias,
           elevation: 4.0,
           child: Container(
+            height: height,
+            width: width,
             padding: const EdgeInsets.all(16.0),
             alignment: Alignment.center,
             decoration: const BoxDecoration(
@@ -100,9 +104,46 @@ class _MyAppState extends State<MyApp> {
             ),
             child: Transform.rotate(
               angle: (direction * (math.pi / 180) * -1),
-              child: const Icon(
-                Icons.navigation_outlined,
-                size: 100,
+              child: SizedBox(
+                height: height,
+                width: width,
+                child: Column(
+                  // mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'N',
+                      style: Theme.of(context).textTheme.displayMedium,
+                    ),
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        const Icon(
+                          Icons.navigation_outlined,
+                          size: 150,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'W',
+                              style: Theme.of(context).textTheme.displayMedium,
+                            ),
+                            Text(
+                              'E',
+                              style: Theme.of(context).textTheme.displayMedium,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Text(
+                      'S',
+                      style: Theme.of(context).textTheme.displayMedium,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
